@@ -5,55 +5,95 @@ const items = require('../fakeDB');
 const router = new express.Router();
 
 router.get("", function(req, res, next){
-    return res.json({shoppingItems: items});
+    try {
+        return res.json({shoppingItems: items});
+    } catch(err) {
+        return next(err)
+    }
 });
 
 router.post("", function(req, res, next){
-    let name = req.body.name;
-    let price = req.body.price;
+    try {
+        let name = req.body.name;
+        let price = Number(req.body.price);
 
-    items.push({name, price});
+        if(!name || !req.body.price){
+            throw new ExpressError("Invaid inputs.", 400)
+        }
 
-    return res.json({shoppingItems: items});
+        if(isNaN(price)){
+            throw new ExpressError("Price must be a number.", 400)
+        }
+
+        items.push({name, price});
+
+        return res.json({shoppingItems: items});
+    } catch(err) {
+        return next(err)
+    }
 });
 
 router.get("/:name", function(req, res, next){
-    let name = req.params.name;
+    try {
+        let name = req.params.name;
+    
+        let item = items.find(ele => ele.name === name);
 
-    let item = items.find(ele => ele.name === name);
-
-    return res.json({item});
+        if(!item){
+            throw new ExpressError("Cannot find item.", 404)
+        }
+    
+        return res.json({item});
+    } catch(err) {
+        return next(err)
+    }
 
 });
 
 router.patch("/:name", function(req, res, next){
-    let name = req.params.name;
-    let newName = req.query.name;
-    let newPrice = req.query.price;
+    try {
+        let name = req.params.name;
+        let newName = req.body.name;
+        let newPrice = Number(req.body.price);
 
-    let item = items.find(ele => ele.name === name);
+        console.log(newPrice)
+    
+        let item = items.find(ele => ele.name === name);
 
-    item.name = newName || item.name;
-    item.price = newPrice || item.price;
+        if(!item){
+            throw new ExpressError("Cannot find item.", 404)
+        }
 
-    return res.json({item});
+        if(req.body.price && isNaN(newPrice)){
+            throw new ExpressError("Price must be a number.", 400)
+        }
+    
+        item.name = newName || item.name;
+        item.price = newPrice || item.price;
+    
+        return res.json({item});
+    } catch(err) {
+        return next(err)
+    }
 })
 
 router.delete("/:name", function(req, res, next){
-    let name = req.params.name;
+    try {
+        let name = req.params.name;
+    
+        let itemIndex = items.findIndex(ele => ele.name === name);
 
-    let itemIndex = items.findIndex(ele => ele.name === name);
-
-    items.splice(itemIndex);
-
-    return res.json({shoppingItems: items});
+        if(itemIndex === -1){
+            throw new ExpressError("Cannot find item.", 404)
+        }
+    
+        items.splice(itemIndex);
+    
+        return res.json({shoppingItems: items});
+    } catch(err) {
+        return next(err)
+    }
 })
-
-
-
-
-
-
 
 
 module.exports = router;
