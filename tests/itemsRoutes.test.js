@@ -40,13 +40,13 @@ describe("POST /items", function() {
   })
 })
 
-// describe("GET /items/:name", function() {
-//   test("Gets an item", async function() {
-//     const resp = await request(app).get('/items/chocolate');
-//     const item = resp.body;
+describe("GET /items/:name", function() {
+  test("Gets an item", async function() {
+    const resp = await request(app).get('/items/chocolate');
+    const item = resp.body;
     
-//     expect(resp.statusCode).toBe(200);
-//     expect(item.name).toEqual("chocolate");
-//     expect(item.name).toEqual(10000);
-//   })
-// })
+    expect(resp.statusCode).toBe(200);
+    expect(item.name).toEqual("chocolate");
+    expect(item.name).toEqual(10000);
+  })
+})
