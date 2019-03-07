@@ -5,6 +5,7 @@ const items = require('../fakeDB');
 const router = new express.Router();
 
 router.get("", function(req, res, next){
+    console.log("inside route", items);
     try {
         return res.json({shoppingItems: items});
     } catch(err) {
@@ -36,8 +37,11 @@ router.post("", function(req, res, next){
 router.get("/:name", function(req, res, next){
     try {
         let name = req.params.name;
-    
+        console.log(name, items)
+
         let item = items.find(ele => ele.name === name);
+
+        console.log(item)
 
         if(!item){
             throw new ExpressError("Cannot find item.", 404)

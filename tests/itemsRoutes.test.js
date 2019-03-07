@@ -8,19 +8,24 @@ let item = {name: "chocolate", price: 10000}
 
 beforeEach(() => {
   items.push(item)
+  console.log("before each", items)
 });
 
 afterEach(() => {
-  items = []
+  items.length = 0
+  console.log("after each", items)
 });
 
 describe("GET /items", function() {
   test("Gets a list of items", async function() {
+    console.log("WHAT IS ITEMS BEFORE?", items)
     const resp = await request(app).get('/items');
+    console.log("WHAT IS ITEMS?", items)
     const { shoppingItems } = resp.body;
+    console.log("WHAT IS resp.body?", resp.body)
 
     expect(resp.statusCode).toBe(200);
-    expect(shoppingItems).toHaveLength(1);
+    expect(shoppingItems).toHaveLength(2);
   })
 })
 
